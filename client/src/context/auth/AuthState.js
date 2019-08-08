@@ -1,7 +1,8 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import axios from "axios";
 import AuthContext from "./authContext";
 import AuthReducer from "./authReducer";
+import ErrorContext from "../error/errorContext";
 
 import {
   USER_LOADED,
@@ -22,6 +23,8 @@ const AuthState = props => {
     user: null
   };
 
+  const errorContext = useContext(ErrorContext);
+
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   // Load user
@@ -39,7 +42,9 @@ const AuthState = props => {
         })
       )
       .catch(err => {
-        dispatch(returnErrors(err.response.data, err.response.status));
+        dispatch(
+          errorContext.returnErrors(err.response.data, err.response.status)
+        );
         dispatch({
           type: AUTH_ERROR
         });
@@ -67,7 +72,11 @@ const AuthState = props => {
       )
       .catch(err => {
         dispatch(
-          returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
+          errorContext.returnErrors(
+            err.response.data,
+            err.response.status,
+            "REGISTER_FAIL"
+          )
         );
         dispatch({
           type: REGISTER_FAIL
@@ -97,7 +106,11 @@ const AuthState = props => {
       )
       .catch(err => {
         dispatch(
-          returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+          errorContext.returnErrors(
+            err.response.data,
+            err.response.status,
+            "LOGIN_FAIL"
+          )
         );
         dispatch({
           type: LOGIN_FAIL

@@ -28,7 +28,9 @@ const ErrorState = props => {
         returnErrors,
         clearErrors
       }}
-    />
+    >
+      {props.children}
+    </ErrorContext.Provider>
   );
 };
 

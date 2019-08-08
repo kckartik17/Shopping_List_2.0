@@ -15,7 +15,8 @@ import {
 import AuthContext from "../../context/auth/authContext";
 import ErrorContext from "../../context/error/errorContext";
 
-const LoginModal = ({ isAuthenticated, error, login, clearErrors }) => {
+const LoginModal = props => {
+  const { isAuthenticated, error, register, clearErrors } = props;
   const authContext = useContext(AuthContext);
   const errorContext = useContext(ErrorContext);
 
@@ -27,23 +28,30 @@ const LoginModal = ({ isAuthenticated, error, login, clearErrors }) => {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState(null);
 
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  }
+
   useEffect(() => {
-    if (error !== prevProps.error) {
-      // Check for register error
-      if (error.id === "LOGIN_FAIL") {
+    if (prevProps.error !== error) {
+      if (error.id === "REGISTER_FAIL") {
         setMsg({ msg: error.msg.msg });
       } else {
         setMsg({ msg: null });
       }
     }
+  }, [isAuthenticated, error, register, clearErrors]);
 
-    // If authenticated, close modal
-    if (modal) {
-      if (isAuthenticated) {
-        toggle();
-      }
+  // If authenticated, close modal
+  if (modal) {
+    if (isAuthenticated) {
+      toggle();
     }
-  }, []);
+  }
 
   const toggle = () => {
     // Clear errors
